@@ -1,0 +1,27 @@
+# Logs
+logs
+*.log
+
+# env
+.env
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Distribution folders
+build
+dist
+
+# Dependency directories
+node_modules
+
+# Local stuff
+.merlin
+.vscode
+config.json
+
+# mac
+.bsb.lock
+.DS_Store
+.rts2_cache_cjs
+.rts2_cache_esm

@@ -1,0 +1,33 @@
+ jobs:
+  include:
+    - stage: test
+      language: node_js
+      node_js:
+        - 12
+      install:
+        - npm ci
+      script:
+        - npm run build
+        - npm test
+    - stage: release
+      language: node_js
+      node_js:
+        - 12
+      script:
+        - npx semantic-release
+    # Adding this step would deploy the built package to Now
+    # Refer to README for more information
+    # - stage: deploy
+    # language: node_js
+    # node_js:
+    #   - 12
+    # install:
+    #   - npm i -g now
+    # script:
+    #   - now --token=$NOW_TOKEN --target=production
+stages:
+  - test
+  - release
+    if: branch = master AND type != pull_request
+  # - deploy
+  # if: branch = master AND type != pull_request

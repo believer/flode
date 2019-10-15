@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "@iteam/eslint-config-node",
+  ]
+}
+
