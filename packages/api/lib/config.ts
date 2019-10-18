@@ -1,5 +1,9 @@
 import configPackage from '@iteam/config'
 
+interface Auth {
+  secret: string
+}
+
 interface Postgres {
   host: string
   port: number
@@ -10,12 +14,16 @@ interface Postgres {
 }
 
 export interface Config {
+  auth: Auth
   postgres: Postgres
 }
 
 const config = configPackage({
   file: `${__dirname}/../config.json`,
   defaults: {
+    auth: {
+      secret: 'eraN8qBPs4Tt07m5DAkfUR0lmv0Hxv184wfrfY2zrVA44wi9cZ',
+    },
     postgres: {
       host: 'localhost',
       port: 5432,
@@ -27,5 +35,6 @@ const config = configPackage({
 })
 
 export default {
+  auth: config.get('auth'),
   postgres: config.get('postgres'),
 } as Config

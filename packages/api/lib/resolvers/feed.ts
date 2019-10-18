@@ -1,10 +1,7 @@
-import { gql } from 'apollo-server-express'
-import got from 'got'
-import md5 from 'md5'
+import { Resolvers } from '@app/__generated__/rss'
+import { gql, ApolloError } from 'apollo-server-express'
+import { updateFeeds, feeds } from '@app/services/feed'
 import SQL from 'sql-template-strings'
-import parser from 'xml2json'
-import { FeedBody, ParsedRSS, DbAdapter } from '../types'
-import { Resolvers, FeedItem } from '../__generated__/rss'
 
 export const typeDefs = gql`
   enum FeedItemCategory {
@@ -16,85 +13,103 @@ export const typeDefs = gql`
     category: FeedItemCategory!
     description: String!
     guid: String!
+    id: ID!
     link: String!
     pubDate: String!
     title: String!
   }
 
-  input UpdateFeedsInput {
-    feeds: [String!]!
+  type Feed {
+    description: String
+    id: ID!
+    isSubscribed: Boolean!
+    name: String
+    url: String!
+  }
+
+  input AddFeedInput {
+    description: String
+    name: String
+    url: String!
+  }
+
+  input ReadFeedItemInput {
+    feedItemId: ID!
+  }
+
+  input MarkAsReadInput {
+    feedItemId: ID!
   }
 
   extend type Query {
-    feed: [FeedItem!]!
+    feeds: [Feed!]! @isAuthenticated
   }
 
   extend type Mutation {
-    updateFeeds(input: UpdateFeedsInput!): [FeedItem!]!
+    addFeed(input: AddFeedInput!): Feed
+
+    markAsRead(input: MarkAsReadInput!): Boolean! @isAuthenticated
+    markAsUnread(input: MarkAsReadInput!): Boolean! @isAuthenticated
+
+    """
+    Update a users subscribed feeds
+    """
+    updateFeeds: [FeedItem!]! @isAuthenticated
   }
 `
 
-const feedItems = async (db: DbAdapter) => {
-  const query = SQL`
-    SELECT
-      *,
-      to_char(pub_date, 'YYYY-MM-DD"T"HH24:MI:SS".000Z"') as "pubDate"
-    FROM feed ORDER BY pub_date DESC
-  `
-
-  const { rows } = await db.query<FeedItem[]>(query)
-
-  return rows
-}
-
 export const resolvers: Resolvers = {
   Query: {
-    feed: (_, _args, { db }) => feedItems(db),
+    feeds: (_, _args, { auth, db }) => feeds(db, auth.sub),
   },
 
   Mutation: {
-    updateFeeds: async (_, { input }, { db }) => {
-      const result: FeedBody[] = await Promise.all(input.feeds.map(u => got(u)))
-
-      const output = result.flatMap(res => {
-        const data: ParsedRSS = JSON.parse(parser.toJson(res.body))
-
-        return data.rss.channel.item.map(item => ({
-          ...item,
-          title: item.title || '',
-          guid: md5(typeof item.guid === 'object' ? item.guid.$t : item.guid),
-        }))
-      })
-
-      for (let {
-        category,
-        description,
-        guid,
-        link,
-        pubDate,
-        title,
-      } of output) {
-        if (category) {
-          const query = SQL`
-          INSERT INTO feed (category, description, guid, link, pub_date, title)
-          VALUES (${category}, ${description}, ${guid}, ${link}, ${pubDate}, ${title})
-          ON CONFLICT ON CONSTRAINT feed_guid_key DO NOTHING
+    addFeed: async (_, { input }, { db }) => {
+      try {
+        const query = SQL`
+          INSERT INTO feed (description, name, url)
+          VALUES (${input.description}, ${input.name}, ${input.url})
+          RETURNING *
         `
 
-          await db.query(query)
-        } else {
-          const query = SQL`
-          INSERT INTO feed (description, guid, link, pub_date, title)
-          VALUES (${description}, ${guid}, ${link}, ${pubDate}, ${title})
-          ON CONFLICT ON CONSTRAINT feed_guid_key DO NOTHING
-        `
+        const { rows } = await db.query(query)
 
-          await db.query(query)
+        return rows[0]
+      } catch (e) {
+        if (e.detail.includes('already exists')) {
+          throw new ApolloError('The feed already exists')
         }
-      }
 
-      return feedItems(db)
+        throw new Error(e)
+      }
     },
+
+    markAsRead: async (_, { input }, { auth, db }) => {
+      const query = SQL`
+        INSERT INTO user_feed_item (user_id, feed_item_id, read)
+        VALUES (${auth.sub}, ${input.feedItemId}, TRUE)
+      `
+
+      await db.query(query)
+
+      return true
+    },
+
+    markAsUnread: async (_, { input }, { auth, db }) => {
+      const query = SQL`
+        UPDATE user_feed_item 
+        SET read = FALSE 
+        WHERE 
+          user_id = ${auth.sub}
+          AND feed_item_id = ${input.feedItemId}
+      `
+
+      await db.query(query)
+
+      return true
+    },
+
+    updateFeeds: async (_, _args, { auth, db }) => updateFeeds(db, auth.sub),
   },
 }
 

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
     "module": "commonjs",
@@ -10,9 +10,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "build",
+    "paths": {
+      "@app/*": ["lib/*"]
+    },
+    "resolveJsonModule": true,
     "rootDir": ".",
     "sourceMap": true,
-    "target": "esnext",
-    "strict": true
+    "strict": true,
+    "target": "esnext"
   }
 }

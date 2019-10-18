@@ -1,5 +1,6 @@
 import { SQLStatement } from 'sql-template-strings'
 import postgres from './adapters/postgres'
+import { Request } from 'express'
 
 export interface FeedItem {
   category?: string
@@ -33,6 +34,12 @@ export interface DbAdapter {
   query: typeof postgres.query
 }
 
+export interface AuthUser {
+  sub: string
+  email: string
+}
+
 export interface RSSContext {
+  auth: AuthUser
   db: DbAdapter
 }
