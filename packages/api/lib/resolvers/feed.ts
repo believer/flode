@@ -14,6 +14,7 @@ export const typeDefs = gql`
     description: String!
     guid: String!
     id: ID!
+    isRead: Boolean!
     link: String!
     pubDate: String!
     title: String!
@@ -49,6 +50,7 @@ export const typeDefs = gql`
 
     markAsRead(input: MarkAsReadInput!): Boolean! @isAuthenticated
     markAsUnread(input: MarkAsReadInput!): Boolean! @isAuthenticated
+    markAllAsRead: Boolean! @isAuthenticated
 
     """
     Update a users subscribed feeds
@@ -94,6 +96,32 @@ export const resolvers: Resolvers = {
       `
 
       await db.query(query)
+
+      return true
+    },
+
+    markAllAsRead: async (_, _args, { auth, db }) => {
+      const allQuery = SQL`
+        SELECT 
+          fi.id
+        FROM 
+          user_feed uf 
+          INNER JOIN feed_item fi ON fi.feed_id = uf.feed_id
+        WHERE 
+          uf.user_id = ${auth.sub}
+      `
+
+      const { rows } = await db.query(allQuery)
+
+      for (let row of rows) {
+        const query = SQL`
+          INSERT INTO user_feed_item (user_id, feed_item_id, read)
+          VALUES (${auth.sub}, ${row.id}, TRUE)
+          ON CONFLICT DO NOTHING
+        `
+
+        await db.query(query)
+      }
 
       return true
     },

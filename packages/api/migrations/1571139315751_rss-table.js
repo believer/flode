@@ -77,6 +77,10 @@ exports.up = async pgm => {
     read: { type: 'boolean', default: false },
   })
 
+  pgm.createIndex('user_feed_item', ['user_id', 'feed_item_id'], {
+    unique: true,
+  })
+
   const feeds = await getFeeds()
 
   feeds.forEach(f => {

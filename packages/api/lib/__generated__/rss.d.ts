@@ -14,8 +14,6 @@ export type Scalars = {
 
 
 export type AddFeedInput = {
-  description?: Maybe<Scalars['String']>,
-  name?: Maybe<Scalars['String']>,
   url: Scalars['String'],
 };
 
@@ -29,8 +27,9 @@ export type Feed = {
   description?: Maybe<Scalars['String']>,
   id: Scalars['ID'],
   isSubscribed: Scalars['Boolean'],
-  name?: Maybe<Scalars['String']>,
-  url: Scalars['String'],
+  language?: Maybe<Scalars['String']>,
+  link: Scalars['String'],
+  title: Scalars['String'],
 };
 
 export enum FeedFilter {
@@ -44,6 +43,7 @@ export type FeedItem = {
   description: Scalars['String'],
   guid: Scalars['String'],
   id: Scalars['ID'],
+  isRead: Scalars['Boolean'],
   link: Scalars['String'],
   pubDate: Scalars['String'],
   title: Scalars['String'],
@@ -62,9 +62,9 @@ export type Mutation = {
    __typename?: 'Mutation',
   _empty?: Maybe<Scalars['String']>,
   addFeed?: Maybe<Feed>,
-  readFeedItem: Scalars['Boolean'],
   markAsRead: Scalars['Boolean'],
   markAsUnread: Scalars['Boolean'],
+  markAllAsRead: Scalars['Boolean'],
   /** Update a users subscribed feeds */
   updateFeeds: Array<FeedItem>,
   subscribeToFeed: User,
@@ -75,11 +75,6 @@ export type Mutation = {
 
 export type MutationAddFeedArgs = {
   input: AddFeedInput
-};
-
-
-export type MutationReadFeedItemArgs = {
-  input: ReadFeedItemInput
 };
 
 
@@ -223,10 +218,10 @@ export type ResolversTypes = {
   FeedItemCategory: FeedItemCategory,
   Mutation: ResolverTypeWrapper<{}>,
   AddFeedInput: AddFeedInput,
-  ReadFeedItemInput: ReadFeedItemInput,
   MarkAsReadInput: MarkAsReadInput,
   SubcribeToFeedInput: SubcribeToFeedInput,
   CreateTokenInput: CreateTokenInput,
+  ReadFeedItemInput: ReadFeedItemInput,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -243,10 +238,10 @@ export type ResolversParentTypes = {
   FeedItemCategory: FeedItemCategory,
   Mutation: {},
   AddFeedInput: AddFeedInput,
-  ReadFeedItemInput: ReadFeedItemInput,
   MarkAsReadInput: MarkAsReadInput,
   SubcribeToFeedInput: SubcribeToFeedInput,
   CreateTokenInput: CreateTokenInput,
+  ReadFeedItemInput: ReadFeedItemInput,
 };
 
 export type IsAuthenticatedDirectiveResolver<Result, Parent, ContextType = RSSContext, Args = {  }> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
@@ -257,8 +252,9 @@ export type FeedResolvers<ContextType = RSSContext, ParentType extends Resolvers
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   isSubscribed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  language?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  link?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type FeedItemResolvers<ContextType = RSSContext, ParentType extends ResolversParentTypes['FeedItem'] = ResolversParentTypes['FeedItem']> = {
@@ -266,6 +262,7 @@ export type FeedItemResolvers<ContextType = RSSContext, ParentType extends Resol
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   guid?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  isRead?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   link?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   pubDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
@@ -274,9 +271,9 @@ export type FeedItemResolvers<ContextType = RSSContext, ParentType extends Resol
 export type MutationResolvers<ContextType = RSSContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   addFeed?: Resolver<Maybe<ResolversTypes['Feed']>, ParentType, ContextType, RequireFields<MutationAddFeedArgs, 'input'>>,
-  readFeedItem?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationReadFeedItemArgs, 'input'>>,
   markAsRead?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationMarkAsReadArgs, 'input'>>,
   markAsUnread?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationMarkAsUnreadArgs, 'input'>>,
+  markAllAsRead?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   updateFeeds?: Resolver<Array<ResolversTypes['FeedItem']>, ParentType, ContextType>,
   subscribeToFeed?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSubscribeToFeedArgs, 'input'>>,
   unsubscribeToFeed?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUnsubscribeToFeedArgs, 'input'>>,

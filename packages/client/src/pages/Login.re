@@ -82,33 +82,42 @@ let make = () => {
   };
 
   <div className="flex h-screen">
-    <form
-      className="w-1/2 px-32 flex flex-col justify-center"
-      onSubmit={form.submit->Formality.Dom.preventDefault}>
-      <Form.Input
-        error={Email->(form.result)}
-        label="E-mail"
-        name="login-email"
-        onChange={handleChange(Email, LoginForm.EmailField.update)}
-        placeholder="you@example.com"
-        value={form.state.email}
-      />
-      <Form.Input
-        className="mt-6"
-        error={Password->(form.result)}
-        label="Password"
-        name="login-password"
-        placeholder="Enter your password"
-        onChange={handleChange(Password, LoginForm.PasswordField.update)}
-        type_="password"
-        value={form.state.password}
-      />
-      <div className="mt-10">
-        <Button.Primary type_="submit">
-          {React.string("Login")}
-        </Button.Primary>
+    <div className="w-full sm:w-1/2 p-8 flex flex-col">
+      <div className="flex items-center text-xl font-light">
+        <Logo />
+        <div className="ml-5"> {React.string("Flode")} </div>
       </div>
-    </form>
-    <div className="bg-gray-200 flex-1" />
+      <form
+        className="flex flex-col h-full justify-center px-4 lg:px-24"
+        onSubmit={form.submit->Formality.Dom.preventDefault}>
+        <div className="text-3xl font-semibold mb-8">
+          {React.string("Log in")}
+        </div>
+        <Form.Input
+          error={Email->(form.result)}
+          label="E-mail"
+          name="login-email"
+          onChange={handleChange(Email, LoginForm.EmailField.update)}
+          placeholder="you@example.com"
+          value={form.state.email}
+        />
+        <Form.Input
+          className="mt-6"
+          error={Password->(form.result)}
+          label="Password"
+          name="login-password"
+          placeholder="Enter your password"
+          onChange={handleChange(Password, LoginForm.PasswordField.update)}
+          type_="password"
+          value={form.state.password}
+        />
+        <div className="mt-10">
+          <Button.Primary className="w-full" type_="submit">
+            {React.string("Login")}
+          </Button.Primary>
+        </div>
+      </form>
+    </div>
+    <div className="bg-gray-200 flex-1 hidden sm:block" />
   </div>;
 };

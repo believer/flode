@@ -14,37 +14,40 @@ module Style = {
     ]);
 
   let logo =
-    merge([
-      "h-10 w-10",
-      style([
-        hover([
-          selector(
-            ".rotateClockwise",
-            [
-              animationName(rotateClockwise),
-              animationDuration(800),
-              animationIterationCount(`count(1)),
-              transformOrigin(`percent(50.0), `percent(50.0)),
-            ],
-          ),
-          selector(
-            ".rotateCounterClockwise",
-            [
-              animationName(rotateCounterClockwise),
-              animationDuration(600),
-              animationIterationCount(`count(1)),
-              transformOrigin(`percent(50.0), `percent(50.0)),
-            ],
-          ),
-        ]),
+    style([
+      hover([
+        selector(
+          ".rotateClockwise",
+          [
+            animationName(rotateClockwise),
+            animationDuration(800),
+            animationIterationCount(`count(1)),
+            transformOrigin(`percent(50.0), `percent(50.0)),
+          ],
+        ),
+        selector(
+          ".rotateCounterClockwise",
+          [
+            animationName(rotateCounterClockwise),
+            animationDuration(600),
+            animationIterationCount(`count(1)),
+            transformOrigin(`percent(50.0), `percent(50.0)),
+          ],
+        ),
       ]),
     ]);
 };
 
 [@react.component]
-let make = () => {
+let make = (~size=`Small) => {
+  let size =
+    switch (size) {
+    | `Small => "h-10 w-10"
+    | `Large => "h-16 w-16"
+    };
+
   <svg
-    className=Style.logo
+    className={Cn.make([Style.logo, size])}
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 430
     430">

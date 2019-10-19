@@ -16,3 +16,15 @@ body {
     font-family: "Inter var", sans-serif;
   }
 }
+
+.grid {
+  display: grid;
+}
+
+.grid-template-main {
+  grid-template-columns: 20px 1fr minmax(300px, 800px) 1fr 20px;
+}
+
+.grid-column-main {
+  grid-column: 3 / 4;
+}
