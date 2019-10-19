@@ -1,9 +1,18 @@
+@import url("https://rsms.me/inter/inter.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html,
 body {
-	@apply font-normal m-0 p-0;
+  @apply m-0 p-0 text-gray-800;
+
+  font-family: "Inter", sans-serif;
 }
 
+@supports (font-variation-settings: normal) {
+  html {
+    font-family: "Inter var", sans-serif;
+  }
+}

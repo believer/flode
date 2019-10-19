@@ -1,6 +1,6 @@
 import { Resolvers } from '@app/__generated__/rss'
 import { gql, ApolloError } from 'apollo-server-express'
-import { updateFeeds, feeds } from '@app/services/feed'
+import { updateFeeds, feeds, feedInformation } from '@app/services/feed'
 import SQL from 'sql-template-strings'
 
 export const typeDefs = gql`
@@ -23,13 +23,12 @@ export const typeDefs = gql`
     description: String
     id: ID!
     isSubscribed: Boolean!
-    name: String
-    url: String!
+    language: String
+    link: String!
+    title: String!
   }
 
   input AddFeedInput {
-    description: String
-    name: String
     url: String!
   }
 
@@ -66,11 +65,15 @@ export const resolvers: Resolvers = {
   Mutation: {
     addFeed: async (_, { input }, { db }) => {
       try {
+        const { title, link, description, language } = await feedInformation(
+          input.url
+        )
+
         const query = SQL`
-          INSERT INTO feed (description, name, url)
-          VALUES (${input.description}, ${input.name}, ${input.url})
-          RETURNING *
-        `
+        INSERT INTO feed (description, title, link, language)
+        VALUES (${description}, ${title}, ${link}, ${language})
+        RETURNING *
+      `
 
         const { rows } = await db.query(query)
 

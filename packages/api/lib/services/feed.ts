@@ -5,6 +5,13 @@ import md5 from 'md5'
 import SQL from 'sql-template-strings'
 import parser from 'xml2json'
 
+export const feedInformation = async (url: string) => {
+  const { body } = await got(url)
+  const data = JSON.parse(parser.toJson(body))
+
+  return data.rss.channel
+}
+
 export const feeds = async (db: DbAdapter, id: string) => {
   const query = SQL`
     SELECT 
@@ -20,9 +27,9 @@ export const feeds = async (db: DbAdapter, id: string) => {
 }
 
 export const updateFeeds = async (db: DbAdapter, id: string) => {
-  const { rows: feeds } = await db.query<{ id: string; url: string }[]>(SQL`
+  const { rows: feeds } = await db.query<{ id: string; link: string }[]>(SQL`
     SELECT 
-      f.url,
+      f.link,
       f.id
     FROM 
       user_feed uf 
@@ -31,7 +38,7 @@ export const updateFeeds = async (db: DbAdapter, id: string) => {
       uf.user_id = ${id}
   `)
 
-  const result: FeedBody[] = await Promise.all(feeds.map(u => got(u.url)))
+  const result: FeedBody[] = await Promise.all(feeds.map(u => got(u.link)))
 
   const output = result.flatMap((res, i) => {
     const data: ParsedRSS = JSON.parse(parser.toJson(res.body))

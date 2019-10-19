@@ -15,3 +15,5 @@
 .merlin
 .bsb.lock
 npm-debug.log
+.env
+.graphql_ppx_cache

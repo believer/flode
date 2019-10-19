@@ -1,3 +1,6 @@
+const got = require('got')
+const parser = require('xml2json')
+
 const FEEDS = [
   'https://www.alfredapp.com/blog/feed.xml',
   'https://jestjs.io/blog/feed',
@@ -8,7 +11,20 @@ const FEEDS = [
   'https://babeljs.io/blog/feed.xml',
 ]
 
-exports.up = pgm => {
+const getFeeds = async () => {
+  const feeds = await Promise.all(FEEDS.map(url => got(url)))
+
+  return feeds.flatMap((res, i) => {
+    const data = JSON.parse(parser.toJson(res.body))
+    const { description, title, link, language = '' } = data.rss.channel
+    const desc = typeof description === 'object' ? '' : description
+
+    return `INSERT INTO feed (description, title, link, language, website)
+        VALUES ('${desc}', '${title}', '${FEEDS[i]}', '${language}', '${link}')`
+  })
+}
+
+exports.up = async pgm => {
   // User
   pgm.createTable('user', {
     id: { type: 'id', primaryKey: true },
@@ -18,9 +34,11 @@ exports.up = pgm => {
   // Feeds
   pgm.createTable('feed', {
     id: { type: 'id', primaryKey: true },
-    url: { type: 'text', notNull: true, unique: true },
-    name: { type: 'text' },
-    description: { type: 'text' },
+    link: { type: 'text', notNull: true, unique: true },
+    title: { type: 'text', notNull: true },
+    description: { type: 'text', notNull: true },
+    website: { type: 'text' },
+    language: { type: 'text' },
     updated_at: { type: 'timestamp', default: 'NOW()' },
   })
 
@@ -59,9 +77,11 @@ exports.up = pgm => {
     read: { type: 'boolean', default: false },
   })
 
-  pgm.sql(
-    `INSERT INTO feed (url) VALUES ${FEEDS.map(v => `('${v}')`).join(',')}`
-  )
+  const feeds = await getFeeds()
+
+  feeds.forEach(f => {
+    pgm.sql(f)
+  })
 
   pgm.sql(`INSERT INTO "user" (email) VALUES ('rickard.laurin@gmail.com')`)
 }
