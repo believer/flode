@@ -18,7 +18,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "apollo-server-express": "2.9.6",
+    "apollo-server-express": "2.9.7",
     "express": "4.17.1",
     "got": "9.6.0",
     "graphql-directive-auth": "0.3.2",
@@ -29,10 +29,10 @@
     "xml2json": "0.11.2"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "1.8.1",
-    "@graphql-codegen/introspection": "1.8.1",
-    "@graphql-codegen/typescript": "1.8.1",
-    "@graphql-codegen/typescript-resolvers": "1.8.1",
+    "@graphql-codegen/cli": "1.8.2",
+    "@graphql-codegen/introspection": "1.8.2",
+    "@graphql-codegen/typescript": "1.8.2",
+    "@graphql-codegen/typescript-resolvers": "1.8.2",
     "@iteam/config": "12.1.0",
     "@iteam/eslint-config-node": "0.3.0",
     "@types/got": "9.6.7",
