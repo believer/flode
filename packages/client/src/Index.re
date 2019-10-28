@@ -31,8 +31,10 @@ let client =
   );
 
 ReactDOMRe.renderToElementWithId(
-  <ReasonApolloHooks.ApolloProvider client>
-    <App />
-  </ReasonApolloHooks.ApolloProvider>,
+  <Theme.Provider>
+    <ReasonApolloHooks.ApolloProvider client>
+      <App />
+    </ReasonApolloHooks.ApolloProvider>
+  </Theme.Provider>,
   "root",
 );

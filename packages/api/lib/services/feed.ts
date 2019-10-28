@@ -93,7 +93,8 @@ export const userFeed = async (
       TO_CHAR(
         pub_date, 'YYYY-MM-DD"T"HH24:MI:SS".000Z"'
       ) AS "pubDate", 
-      CASE WHEN ufi.read IS NULL THEN FALSE ELSE TRUE END as "isRead"
+      CASE WHEN ufi.read IS NULL THEN FALSE ELSE TRUE END as "isRead",
+      SUBSTRING(REGEXP_REPLACE(description, E'<[^>]+>', '', 'gi'), 0, 97) || '...' as "shortDescription"
     FROM 
       user_feed uf 
       INNER JOIN feed_item fi ON fi.feed_id = uf.feed_id 

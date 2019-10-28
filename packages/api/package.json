@@ -40,7 +40,7 @@
     "@types/lodash.merge": "4.6.6",
     "@types/md5": "2.1.33",
     "@types/xml2json": "0.11.0",
-    "eslint": "6.5.1",
+    "eslint": "6.6.0",
     "husky": "3.0.9",
     "jest": "24.9.0",
     "jest-watch-typeahead": "0.4.0",

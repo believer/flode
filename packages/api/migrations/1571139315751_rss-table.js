@@ -51,7 +51,7 @@ exports.up = async pgm => {
   pgm.createIndex('user_feed', ['user_id', 'feed_id'], { unique: true })
 
   // Feed items
-  pgm.createType('feed_category', ['Comics', 'Uncategorized'])
+  pgm.createType('feed_category', ['Comics', 'Uncategorized', 'TypeScript'])
 
   pgm.createTable('feed_item', {
     id: { type: 'id', primaryKey: true },

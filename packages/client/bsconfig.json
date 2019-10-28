@@ -26,7 +26,8 @@
     "reason-apollo-hooks",
     "re-classnames",
     "re-formality",
-    "bs-css"
+    "bs-css",
+    "re-tailwind"
   ],
   "bs-dev-dependencies": [
     "@glennsl/bs-jest",
@@ -36,7 +37,7 @@
   "ppx-flags": ["@baransu/graphql_ppx_re/ppx"],
   "refmt": 3,
   "warnings": {
-    "number": "+A-9-40-42-48-102",
-    "error": "+A-3-40-42-44-102"
+    "number": "+A-9-40-41-42-48-102",
+    "error": "+A-3-40-41-42-44-102"
   }
 }

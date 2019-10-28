@@ -22,9 +22,55 @@ body {
 }
 
 .grid-template-main {
-  grid-template-columns: 20px 1fr minmax(300px, 800px) 1fr 20px;
+  grid-template-columns: 440px 1fr;
 }
 
 .grid-column-main {
   grid-column: 3 / 4;
+}
+
+.grid-template-article {
+  grid-template-columns: 20px 1fr 600px 1fr 20px;
+}
+
+/** Markdown */
+.markdown p {
+  @apply my-5 leading-relaxed;
+}
+
+.markdown h2 {
+  @apply text-2xl font-semibold;
+}
+
+.markdown h3 {
+  @apply text-lg font-semibold;
+}
+
+.markdown .anchor,
+.markdown .hash-link {
+  @apply hidden;
+}
+
+.markdown pre {
+  @apply bg-gray-100 border border-gray-300 rounded p-5;
+}
+
+.markdown code {
+  @apply whitespace-normal;
+}
+
+.markdown ul {
+  @apply ml-5;
+}
+
+.markdown li {
+  @apply list-disc;
+}
+
+.markdown li:not(:last-of-type) {
+  @apply mb-4;
+}
+
+.markdown.theme-dark {
+  @apply text-gray-500;
 }

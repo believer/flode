@@ -38,7 +38,7 @@ let make = () => {
           let updateFeed =
             GetFeeds.make() |> ReasonApolloHooks.Utils.toQueryObj;
           let profile =
-            Home.GetProfile.make() |> ReasonApolloHooks.Utils.toQueryObj;
+            HomeQuery.GetProfile.make() |> ReasonApolloHooks.Utils.toQueryObj;
 
           [|updateFeed, profile|];
         },

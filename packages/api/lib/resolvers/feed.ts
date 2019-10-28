@@ -6,12 +6,14 @@ import SQL from 'sql-template-strings'
 export const typeDefs = gql`
   enum FeedItemCategory {
     Comics
+    TypeScript
     Uncategorized
   }
 
   type FeedItem {
     category: FeedItemCategory!
     description: String!
+    shortDescription: String!
     guid: String!
     id: ID!
     isRead: Boolean!
@@ -42,6 +44,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
+    article(id: ID!): FeedItem
     feeds: [Feed!]! @isAuthenticated
   }
 
@@ -61,6 +64,28 @@ export const typeDefs = gql`
 
 export const resolvers: Resolvers = {
   Query: {
+    article: async (_, { id }, { db }) => {
+      const query = SQL`
+    SELECT 
+        fi.*, 
+      TO_CHAR(
+        pub_date, 'YYYY-MM-DD"T"HH24:MI:SS".000Z"'
+      ) AS "pubDate", 
+      CASE WHEN ufi.read IS NULL THEN FALSE ELSE TRUE END as "isRead",
+      SUBSTRING(REGEXP_REPLACE(description, E'<[^>]+>', '', 'gi'), 0, 97) || '...' as "shortDescription"
+    FROM 
+      feed_item fi 
+      LEFT JOIN user_feed_item ufi ON ufi.feed_item_id = fi.id 
+    WHERE fi.id = ${id}
+  `
+
+      const {
+        rows: [first = null],
+      } = await db.query(query)
+
+      return first
+    },
+
     feeds: (_, _args, { auth, db }) => feeds(db, auth.sub),
   },
 
@@ -93,6 +118,7 @@ export const resolvers: Resolvers = {
       const query = SQL`
         INSERT INTO user_feed_item (user_id, feed_item_id, read)
         VALUES (${auth.sub}, ${input.feedItemId}, TRUE)
+        ON CONFLICT DO NOTHING
       `
 
       await db.query(query)

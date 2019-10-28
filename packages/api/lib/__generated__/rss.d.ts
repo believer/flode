@@ -41,6 +41,7 @@ export type FeedItem = {
    __typename?: 'FeedItem',
   category: FeedItemCategory,
   description: Scalars['String'],
+  shortDescription: Scalars['String'],
   guid: Scalars['String'],
   id: Scalars['ID'],
   isRead: Scalars['Boolean'],
@@ -51,6 +52,7 @@ export type FeedItem = {
 
 export enum FeedItemCategory {
   Comics = 'Comics',
+  TypeScript = 'TypeScript',
   Uncategorized = 'Uncategorized'
 }
 
@@ -105,9 +107,15 @@ export type MutationCreateTokenArgs = {
 export type Query = {
    __typename?: 'Query',
   _empty?: Maybe<Scalars['String']>,
+  article?: Maybe<FeedItem>,
   feeds: Array<Feed>,
   getStuff: Stuff,
   user?: Maybe<User>,
+};
+
+
+export type QueryArticleArgs = {
+  id: Scalars['ID']
 };
 
 
@@ -208,14 +216,14 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>,
   String: ResolverTypeWrapper<Scalars['String']>,
-  Feed: ResolverTypeWrapper<Feed>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
+  FeedItem: ResolverTypeWrapper<FeedItem>,
+  FeedItemCategory: FeedItemCategory,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  Feed: ResolverTypeWrapper<Feed>,
   Stuff: ResolverTypeWrapper<Stuff>,
   FeedFilter: FeedFilter,
   User: ResolverTypeWrapper<User>,
-  FeedItem: ResolverTypeWrapper<FeedItem>,
-  FeedItemCategory: FeedItemCategory,
   Mutation: ResolverTypeWrapper<{}>,
   AddFeedInput: AddFeedInput,
   MarkAsReadInput: MarkAsReadInput,
@@ -228,14 +236,14 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Query: {},
   String: Scalars['String'],
-  Feed: Feed,
   ID: Scalars['ID'],
+  FeedItem: FeedItem,
+  FeedItemCategory: FeedItemCategory,
   Boolean: Scalars['Boolean'],
+  Feed: Feed,
   Stuff: Stuff,
   FeedFilter: FeedFilter,
   User: User,
-  FeedItem: FeedItem,
-  FeedItemCategory: FeedItemCategory,
   Mutation: {},
   AddFeedInput: AddFeedInput,
   MarkAsReadInput: MarkAsReadInput,
@@ -260,6 +268,7 @@ export type FeedResolvers<ContextType = RSSContext, ParentType extends Resolvers
 export type FeedItemResolvers<ContextType = RSSContext, ParentType extends ResolversParentTypes['FeedItem'] = ResolversParentTypes['FeedItem']> = {
   category?: Resolver<ResolversTypes['FeedItemCategory'], ParentType, ContextType>,
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  shortDescription?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   guid?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   isRead?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
@@ -282,6 +291,7 @@ export type MutationResolvers<ContextType = RSSContext, ParentType extends Resol
 
 export type QueryResolvers<ContextType = RSSContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  article?: Resolver<Maybe<ResolversTypes['FeedItem']>, ParentType, ContextType, RequireFields<QueryArticleArgs, 'id'>>,
   feeds?: Resolver<Array<ResolversTypes['Feed']>, ParentType, ContextType>,
   getStuff?: Resolver<ResolversTypes['Stuff'], ParentType, ContextType>,
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, QueryUserArgs>,
