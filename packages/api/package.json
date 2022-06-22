@@ -20,7 +20,7 @@
   "dependencies": {
     "apollo-server-express": "2.14.2",
     "express": "4.17.1",
-    "got": "9.6.0",
+    "got": "11.8.5",
     "graphql-directive-auth": "0.3.2",
     "jsonwebtoken": "8.5.1",
     "lodash.merge": "4.6.2",
