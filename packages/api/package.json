@@ -19,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "apollo-server-express": "2.14.2",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "got": "9.6.0",
     "graphql-directive-auth": "0.3.2",
     "jsonwebtoken": "8.5.1",
