@@ -22,7 +22,7 @@
     "express": "4.17.1",
     "got": "9.6.0",
     "graphql-directive-auth": "0.3.2",
-    "jsonwebtoken": "8.5.1",
+    "jsonwebtoken": "9.0.0",
     "lodash.merge": "4.6.2",
     "md5": "2.2.1",
     "sql-template-strings": "2.2.2",
